@@ -5,3 +5,6 @@ cd manifestation-board
 # Install additional dependencies
 npm install next-auth axios react-dnd recharts @prisma/client
 npm install -D prisma typescript @types/react
+
+npx prisma migrate dev --name init
+
