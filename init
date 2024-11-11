@@ -11,3 +11,5 @@ npx prisma migrate dev --name init
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 
+npm install zod axios recharts
+
