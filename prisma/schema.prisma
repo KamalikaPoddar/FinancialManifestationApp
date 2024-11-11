@@ -7,6 +7,18 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum UserRole {
+  USER
+  ADMIN
+  PREMIUM
+}
+
+enum AccountType {
+  PERSONAL
+  BUSINESS
+  JOINT
+}
+
 model User {
  id            String      @id @default(cuid())
   name          String?
@@ -30,6 +42,8 @@ model User {
 
   financialProfile FinancialProfile?
   dailyFinancialPlans DailyFinancialPlan[]
+  transactions Transaction[]
+  simulations  FinancialSimulation[]
 
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
@@ -104,20 +118,8 @@ enum SimulationType {
   AGGRESSIVE
 }
 
-// Extend existing models
-model User {
-  transactions Transaction[]
-  simulations  FinancialSimulation[]
-}
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  goals         Goal[]
-  transactions  Transaction[]
-  financialProfile FinancialProfile?
-}
+
 
 model Goal {
   id            String   @id @default(cuid())
@@ -190,4 +192,40 @@ model DailyFinancialPlan {
   user         User     @relation(fields: [userId], references: [id])
   planDetails  Json
   date         DateTime @default(now())
+}
+
+// Authentication Models
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
