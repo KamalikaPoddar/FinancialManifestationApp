@@ -125,4 +125,20 @@ model FinancialProfile {
   creditScore   Int?
 }
 
+model Goal {
+  id            String      @id @default(cuid())
+  title         String
+  targetAmount  Float
+  currentAmount Float       @default(0)
+  deadline      DateTime
+  status        GoalStatus  @default(ACTIVE)
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String
+}
+
+enum GoalStatus {
+  ACTIVE
+  COMPLETED
+  PAUSED
+}
 
