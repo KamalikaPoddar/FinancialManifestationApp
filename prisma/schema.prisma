@@ -1,0 +1,49 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  goals         Goal[]
+  financialProfile FinancialProfile?
+}
+
+model Goal {
+  id            String   @id @default(cuid())
+  title         String
+  targetAmount  Float
+  currentAmount Float    @default(0)
+  deadline      DateTime
+  priority      Int      @default(3)
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+  status        GoalStatus @default(ACTIVE)
+}
+
+enum GoalStatus {
+  ACTIVE
+  COMPLETED
+  PAUSED
+}
+
+model FinancialProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  monthlyIncome Float
+  monthlyExpenses Float
+  creditScore   Int?
+  assets        Float    @default(0)
+  liabilities   Float    @default(0)
+}
