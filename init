@@ -13,3 +13,4 @@ npx tailwindcss init -p
 
 npm install zod axios recharts
 
+npm install react-hot-toast
