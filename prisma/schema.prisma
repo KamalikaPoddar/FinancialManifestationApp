@@ -142,3 +142,27 @@ enum GoalStatus {
   PAUSED
 }
 
+model Goal {
+  id            String      @id @default(cuid())
+  title         String
+  targetAmount  Float
+  currentAmount Float       @default(0)
+  deadline      DateTime
+  priority      Int         @default(2)
+  status        GoalStatus  @default(ACTIVE)
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String
+  notifications Notification[]
+}
+
+model Notification {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  type          String
+  message       String
+  relatedGoalId String?
+  goal          Goal?       @relation(fields: [relatedGoalId], references: [id])
+  read          Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+}
