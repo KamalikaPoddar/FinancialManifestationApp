@@ -8,17 +8,32 @@ generator client {
 }
 
 model User {
-  id            String    @id @default(cuid())
+ id            String      @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?     @unique
   emailVerified DateTime?
   image         String?
+  role          UserRole    @default(USER)
+  
+  // Authentication fields
+  password      String?
   accounts      Account[]
   sessions      Session[]
+
+  // User Profile
+  profile       UserProfile?
+  
+  // Financial Data
   goals         Goal[]
+  transactions  Transaction[]
+  investments   Investment[]
+
   financialProfile FinancialProfile?
   dailyFinancialPlans DailyFinancialPlan[]
 
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
 }
 
 model Goal {
