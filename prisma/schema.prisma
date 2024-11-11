@@ -17,6 +17,8 @@ model User {
   sessions      Session[]
   goals         Goal[]
   financialProfile FinancialProfile?
+  dailyFinancialPlans DailyFinancialPlan[]
+
 }
 
 model Goal {
@@ -165,4 +167,12 @@ model Notification {
   goal          Goal?       @relation(fields: [relatedGoalId], references: [id])
   read          Boolean     @default(false)
   createdAt     DateTime    @default(now())
+}
+
+model DailyFinancialPlan {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  planDetails  Json
+  date         DateTime @default(now())
 }
