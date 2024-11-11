@@ -1,0 +1,12 @@
+graph TD
+    A[API Gateway] --> B[Authentication Service]
+    A --> C[Goal Management Service]
+    A --> D[Financial Projection Service]
+    A --> E[Scenario Simulation Service]
+    A --> F[Notification Service]
+    
+    B --> G[User Database]
+    C --> G
+    D --> H[Financial Data Store]
+    E --> H
+    F --> I[Notification Database]
