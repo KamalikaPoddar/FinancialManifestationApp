@@ -93,3 +93,36 @@ model User {
   simulations  FinancialSimulation[]
 }
 
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  goals         Goal[]
+  transactions  Transaction[]
+  financialProfile FinancialProfile?
+}
+
+model Goal {
+  id            String   @id @default(cuid())
+  title         String
+  targetAmount  Float
+  deadline      DateTime
+  priority      Int
+  status        GoalStatus
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  amount        Float
+  category      TransactionCategory
+  date          DateTime
+}
+
+model FinancialProfile {
+  monthlyIncome Float
+  assets        Float
+  liabilities   Float
+  creditScore   Int?
+}
+
+
