@@ -334,4 +334,23 @@ function calculateInflation(
   return amount * Math.pow(1 + inflationRate, years)
 }
 
+async function getAdvancedProjection(goalId: string) {
+  try {
+    const projection = await advancedFinancialProjectionService.generateAdvancedProjection(
+      goalId,
+      {
+        // Optional additional context
+        riskTolerance: 'medium',
+        monthlyIncome: 75000
+      }
+    )
+
+    console.log(projection.recommendedStrategy)
+    console.log(projection.insights)
+  } catch (error) {
+    // Handle projection errors
+  }
+}
+
+
 export default new AdvancedFinancialProjectionService()
