@@ -14,3 +14,20 @@ npx tailwindcss init -p
 npm install zod axios recharts
 
 npm install react-hot-toast
+
+npm install @prisma/client \
+            @next-auth/prisma-adapter \
+            framer-motion \
+            react-icons \
+            zod \
+            @hookform/resolvers \
+            react-hook-form \
+            next-themes \
+            axios \
+            recharts
+
+# Install dev dependencies
+npm install -D prisma \
+              @types/node \
+              typescript \
+              eslint
