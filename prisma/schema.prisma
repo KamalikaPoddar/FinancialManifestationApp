@@ -47,3 +47,49 @@ model FinancialProfile {
   assets        Float    @default(0)
   liabilities   Float    @default(0)
 }
+
+model Transaction {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id])
+  amount        Float
+  category      TransactionCategory
+  date          DateTime
+  description   String?
+}
+
+model FinancialSimulation {
+  id            String     @id @default(cuid())
+  userId        String
+  goalId        String
+  scenarioType  SimulationType
+  projectedOutcome Float
+  confidenceLevel Float
+  createdAt     DateTime   @default(now())
+}
+
+enum TransactionCategory {
+  INCOME
+  HOUSING
+  TRANSPORTATION
+  FOOD
+  UTILITIES
+  HEALTHCARE
+  SAVINGS
+  INVESTMENTS
+  ENTERTAINMENT
+  MISC
+}
+
+enum SimulationType {
+  CONSERVATIVE
+  MODERATE
+  AGGRESSIVE
+}
+
+// Extend existing models
+model User {
+  transactions Transaction[]
+  simulations  FinancialSimulation[]
+}
+
