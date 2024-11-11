@@ -352,5 +352,223 @@ async function getAdvancedProjection(goalId: string) {
   }
 }
 
+// Enum for Education Levels
+enum EducationLevel {
+  HIGH_SCHOOL = 'High School',
+  BACHELOR = 'Bachelor\'s Degree',
+  MASTER = 'Master\'s Degree',
+  PHD = 'Doctorate',
+  PROFESSIONAL = 'Professional Degree'
+}
+
+// Enum for Study Fields
+enum StudyField {
+  ENGINEERING = 'Engineering',
+  COMPUTER_SCIENCE = 'Computer Science',
+  MEDICAL = 'Medical Sciences',
+  BUSINESS = 'Business Administration',
+  FINANCE = 'Finance',
+  ARTS = 'Arts',
+  SCIENCE = 'Pure Sciences',
+  LAW = 'Legal Studies',
+  HUMANITIES = 'Humanities'
+}
+
+interface EducationalProfile {
+  highestDegree: EducationLevel
+  fieldOfStudy: StudyField
+  graduationYear: number
+  institution?: string
+}
+
+// Income Growth Potential Matrix
+const INCOME_GROWTH_MATRIX = {
+  [EducationLevel.HIGH_SCHOOL]: {
+    baseGrowthRate: 0.03, // 3%
+    careerMobility: 0.2
+  },
+  [EducationLevel.BACHELOR]: {
+    baseGrowthRate: 0.06, // 6%
+    careerMobility: 0.4
+  },
+  [EducationLevel.MASTER]: {
+    baseGrowthRate: 0.10, // 10%
+    careerMobility: 0.6
+  },
+  [EducationLevel.PHD]: {
+    baseGrowthRate: 0.15, // 15%
+    careerMobility: 0.8
+  },
+  [EducationLevel.PROFESSIONAL]: {
+    baseGrowthRate: 0.12, // 12%
+    careerMobility: 0.7
+  }
+}
+
+const FIELD_INCOME_MULTIPLIERS = {
+  [StudyField.COMPUTER_SCIENCE]: 1.3,
+  [StudyField.ENGINEERING]: 1.25,
+  [StudyField.FINANCE]: 1.2,
+  [StudyField.MEDICAL]: 1.4,
+  [StudyField.BUSINESS]: 1.15,
+  [StudyField.LAW]: 1.25,
+  [StudyField.SCIENCE]: 1.1,
+  [StudyField.ARTS]: 0.9,
+  [StudyField.HUMANITIES]: 0.85
+}
+
+class EducationEnhancedProjectionService {
+  // Extend previous projection method to include educational insights
+  async generateEducationEnhancedProjection(
+    goalId: string,
+    educationalProfile: EducationalProfile
+  ) {
+    // Previous projection logic...
+    const baseProjection = await super.generateAdvancedProjection(goalId)
+
+    // Calculate education-enhanced projections
+    const educationEnhancedProjection = this.applyEducationalEnhancements(
+      baseProjection, 
+      educationalProfile
+    )
+
+    return {
+      ...baseProjection,
+      educationInsights: educationEnhancedProjection
+    }
+  }
+
+  private applyEducationalEnhancements(
+    baseProjection: any, 
+    educationalProfile: EducationalProfile
+  ) {
+    const currentAge = this.calculateAge(educationalProfile.graduationYear)
+    const educationGrowthRate = this.calculateEducationBasedGrowthRate(
+      educationalProfile, 
+      currentAge
+    )
+
+    return {
+      educationLevel: educationalProfile.highestDegree,
+      fieldOfStudy: educationalProfile.fieldOfStudy,
+      potentialCareerTrajectory: this.predictCareerTrajectory(
+        educationalProfile, 
+        baseProjection.financialProfile.monthlyIncome
+      ),
+      enhancedIncomeProjection: this.calculateEnhancedIncomeProjection(
+        baseProjection.financialProfile.monthlyIncome,
+        educationGrowthRate,
+        educationalProfile
+      ),
+      skillUpgradeRecommendations: this.generateSkillUpgradeRecommendations(
+        educationalProfile
+      )
+    }
+  }
+
+  private calculateEducationBasedGrowthRate(
+    educationalProfile: EducationalProfile,
+    currentAge: number
+  ): number {
+    const baseGrowthRate = INCOME_GROWTH_MATRIX[educationalProfile.highestDegree].baseGrowthRate
+    const fieldMultiplier = FIELD_INCOME_MULTIPLIERS[educationalProfile.fieldOfStudy]
+    
+    // Age and experience factor
+    const ageFactor = currentAge < 30 ? 1.2 : 
+                      currentAge < 40 ? 1.0 : 
+                      currentAge < 50 ? 0.8 : 0.6
+
+    return baseGrowthRate * fieldMultiplier * ageFactor
+  }
+
+  private predictCareerTrajectory(
+    educationalProfile: EducationalProfile,
+    currentIncome: number
+  ) {
+    const careerStages = [
+      {
+        stage: 'Early Career',
+        yearsRange: '0-5 years',
+        incomeProjection: currentIncome * 1.2,
+        keyFocus: 'Skill Development'
+      },
+      {
+        stage: 'Mid Career',
+        yearsRange: '5-15 years',
+        incomeProjection: currentIncome * 1.5,
+        keyFocus: 'Specialization'
+      },
+      {
+        stage: 'Senior Level',
+        yearsRange: '15-25 years',
+        incomeProjection: currentIncome * 2,
+        keyFocus: 'Leadership'
+      }
+    ]
+
+    return careerStages
+  }
+
+  private generateSkillUpgradeRecommendations(
+    educationalProfile: EducationalProfile
+  ) {
+    const recommendationsByField = {
+      [StudyField.COMPUTER_SCIENCE]: [
+        'Cloud Computing Certification',
+        'Advanced Machine Learning Course',
+        'Cybersecurity Specialization'
+      ],
+      [StudyField.ENGINEERING]: [
+        'Project Management Professional (PMP)',
+        'Lean Six Sigma Certification',
+        'Domain-Specific Technical Certifications'
+      ],
+      [StudyField.BUSINESS]: [
+        'MBA or Executive Program',
+        'Digital Marketing Certification',
+        'Financial Modeling Course'
+      ],
+      // Add more fields...
+    }
+
+    return recommendationsByField[educationalProfile.fieldOfStudy] || [
+      'Generic Professional Development Courses'
+    ]
+  }
+
+  private calculateEnhancedIncomeProjection(
+    currentIncome: number,
+    educationGrowthRate: number,
+    educationalProfile: EducationalProfile
+  ) {
+    const projectionYears = [5, 10, 15, 20]
+    
+    return projectionYears.map(years => ({
+      year: years,
+      projectedIncome: currentIncome * Math.pow(1 + educationGrowthRate, years),
+      cumulativeGrowth: (Math.pow(1 + educationGrowthRate, years) - 1) * 100
+    }))
+  }
+}
+
+// Usage Example
+async function getEducationEnhancedProjection(
+  goalId: string, 
+  educationalProfile: EducationalProfile
+) {
+  const projectionService = new EducationEnhancedProjectionService()
+  
+  const enhancedProjection = await projectionService.generateEducationEnhancedProjection(
+    goalId,
+    {
+      highestDegree: EducationLevel.BACHELOR,
+      fieldOfStudy: StudyField.COMPUTER_SCIENCE,
+      graduationYear: 2018,
+      institution: 'IIT Bombay'
+    }
+  )
+
+  console.log(enhancedProjection.educationInsights)
+}
 
 export default new AdvancedFinancialProjectionService()
